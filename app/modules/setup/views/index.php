@@ -17,41 +17,43 @@
 			<div class="login-box-body">
 				<p class="login-box-msg"><?= wpn_lang('setup_title', 'First admin creation'); ?></p>
 				<?php
-
 				$msg_sistema = $this->session->flashdata('msg_auth');
-
-				if ($msg_sistema) 
+				if ($msg_sistema)
 					echo alerts($msg_sistema, 'warning', true);
 
-				$input_open = '<div class="form-group">';
-				$input_close = '</div>';
-
 				echo form_open('setup', array('role'=>'form'));
-
-				echo $input_open;
-				echo form_label(wpn_lang('input_fullname', 'Full name'), 'name');
-				echo form_input(array('name'=>'name', 'value'=> set_value('name'), 'class'=>'form-control'));
-				echo form_error('name');
-				echo $input_close;
-
-				echo $input_open;
-				echo form_label(wpn_lang('input_validemail', 'Valid email'), 'email');
-				echo form_input(array('name'=>'email', 'value'=> set_value('email'), 'type'=>'email', 'class'=>'form-control'));
-				echo form_error('email');
-				echo $input_close;
-
-				echo $input_open;
-				echo form_label(wpn_lang('input_password', 'Password'), 'password');
-				echo form_password(array('name'=>'password', 'value'=> set_value('password'), 'class'=>'form-control'));
-				echo form_error('password');
-				echo $input_close;
-
-				echo form_button(array('type'=>'submit', 'name'=>'submit', 'content'=> wpn_lang('bot_next', 'Next').' <span class="glyphicon glyphicon-chevron-right"></span>', 'class'=>'btn btn-primary'));
-
-				echo form_close();
-
 				?>
+				<div class="form-group">
+				    <label for="name"><?= wpn_lang('input_fullname', 'Full name'); ?></label>
+					<input type="text" name="name" id="name" value="<?= set_value('name'); ?>" class="form-control" />
+					<?= form_error('name'); ?>
+				</div>
+				<div class="form-group">
+					<label for="email"><?= wpn_lang('input_validemail', 'Valid email'); ?></label>
+					<input type="email" name="email" value="<?= set_value('email'); ?>" class="form-control" />
+					<?= form_error('email'); ?>
+				</div>
+				<div class="form-group">
+					<div class="form-group">
+						<label for="password"><?= wpn_lang('input_password', 'Password'); ?></label>
+						<input type="password" name="password" class="form-control" />
+						<?= form_error('password'); ?>
+					</div>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" name="agree" value="1">
+						Li e concordo com a <a href="http://wpanel.org/licenca.html" target="_blank">Licença e termos de uso</a>.
+					</label>
+					<?= form_error('agree'); ?>
+				</div>
+				<hr/>
+				<button type="submit" class="btn btn-primary">
+					<?= wpn_lang('bot_next', 'Next').' <span class="glyphicon glyphicon-chevron-right"></span>'; ?>
+				</button>
+				<?= form_close(); ?>
 			</div>
-		</div>
+			<p class="text-center" style="padding-top:20px;">&copy; Wpanel CMS <?= date('Y') ?>, <a href="http://wpanelcms.org/licenca.html" target="_blank"><?= wpn_lang('wpn_licence', 'Terms and licence'); ?></a>. <?= wpn_lang('wpn_developed', 'Developed by'); ?> <a href="http://elieldepaula.com.br" target="_blank">Eliel de Paula</a>.</p>
+		</div>px;
 	</body>
 </html>

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * WPanel CMS
  *
@@ -57,10 +57,11 @@ class Main extends MX_Controller
 		// Check if accounts is empty.
 		if ($this->auth->accounts_empty() == FALSE)
 			redirect('admin/login');
-		
+
 		$this->form_validation->set_rules('password', wpn_lang('input_password', 'Password'), 'required');
 		$this->form_validation->set_rules('name', wpn_lang('input_fullname', 'Full name'), 'required');
 		$this->form_validation->set_rules('email', wpn_lang('input_validemail', 'Valid email'), 'required|valid_email');
+		$this->form_validation->set_rules('agree', wpn_lang('input_agree', 'Terms of use'), 'required');
 
 		if ($this->form_validation->run() == FALSE)
 			$this->load->view('setup/index', $this->layout_vars);
@@ -68,7 +69,7 @@ class Main extends MX_Controller
 			$newuser = $this->auth->create_account(
 				$this->input->post('email', TRUE),
 				$this->input->post('password', TRUE),
-				'admin',
+				'ROOT',
 				array(
 					'name' => $this->input->post('name'),
 					'skin' => 'blue',
@@ -77,6 +78,10 @@ class Main extends MX_Controller
 			);
 			if($newuser > 0)
 			{
+
+				// Activate the first user account.
+				$this->auth->activate_account($newuser);
+
 				$this->session->set_flashdata('msg_sistema', wpn_lang('first_account_success', 'Account succefull created'));
 				redirect('admin/login');
 			} else {
