@@ -53,7 +53,7 @@
 				</button>
 				<?= form_close(); ?>
 			</div>
-			<p class="text-center" style="padding-top:20px;">&copy; Wpanel CMS <?= date('Y') ?>, <a href="http://wpanelcms.org/licenca.html" target="_blank"><?= wpn_lang('wpn_licence', 'Terms and licence'); ?></a>. <?= wpn_lang('wpn_developed', 'Developed by'); ?> <a href="http://elieldepaula.com.br" target="_blank">Eliel de Paula</a>.</p>
+			<p class="text-center" style="padding-top:20px;">&copy; Wpanel CMS <?= date('Y') ?>, <a href="http://wpanel.org/licenca.html" target="_blank"><?= wpn_lang('wpn_licence', 'Terms and licence'); ?></a>. <?= wpn_lang('wpn_developed', 'Developed by'); ?> <a href="http://elieldepaula.com.br" target="_blank">Eliel de Paula</a>.</p>
 		</div>px;
 	</body>
 </html>

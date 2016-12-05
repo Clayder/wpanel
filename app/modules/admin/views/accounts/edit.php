@@ -152,7 +152,7 @@
                                                                             name="permission[]" 
                                                                             value="<?= $act['id']; ?>" 
                                                                             class="marcar-<?= $mod['id']; ?>" 
-                                                                            <?php if(has_permission($act['link'], $row->id))echo "checked"; ?>
+                                                                            <?php if(has_permission($act['link'], $row->id, true))echo "checked"; ?>
                                                                             />
                                                                         </td>
                                                                         <td><?= $act['description']; ?></td>

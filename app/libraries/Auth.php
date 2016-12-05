@@ -1,26 +1,39 @@
-<?php
+<?php 
 
 /**
- * Nova biblioteca de autenticação com ACL.
+ * WPanel CMS
  *
- * Esta versão tem como objetivo:
- * -----------------------------------
- * --->> Verificar porque usuario comum esta logando no painel.
- * - gerenciar a ativação/desativação (crud)[ok] (email)[andamento]
- * - Gerar o menu do painel de controle de acordo com as permissões [ok] (de certa forma)
- *        - mostrar links somente para quem tem permissão [ok]
- * - lembrar login (remember me) com cookies
- * - gerenciar os usuários (crud) [ok]
- * - gerenciar os IP´s banidos (crud) [ok]
- * - banir autometicamente os ips [ok]
- * - configurar limite de tentativas [ok]
- * - Gerenciar módulos e actions [ok]
- * - fazer o login e logout do usuário [ok]
- * - registrar os logins realizados [ok]
- * - limitar o acesso por excesso de tentativas [ok]
- *   TODO Criar a tabela ip_banned no arquivo migration. [ok]
+ * An open source Content Manager System for blogs and websites using CodeIgniter and PHP.
+ *
+ * This content is released under the MIT License (MIT)
+ *
+ * Copyright (c) 2014 - 2016, British Columbia Institute of Technology
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @package     WpanelCms
+ * @author      Eliel de Paula <dev@elieldepaula.com.br>
+ * @copyright   Copyright (c) 2008 - 2016, Eliel de Paula. (https://elieldepaula.com.br/)
+ * @license     http://opensource.org/licenses/MIT  MIT License
+ * @link        https://wpanelcms.com.br
  */
-defined('BASEPATH') OR exit('No direct script access allowed');
+ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Auth
 {
@@ -67,7 +80,7 @@ class Auth
     }
 
     //----------------------------------------------------------------
-    //  Métodos da API pública
+    //	Métodos da API pública
     //----------------------------------------------------------------
 
     public function create_account($email, $password, $role, $extra_data = array(), $permissions = array())
@@ -97,7 +110,7 @@ class Auth
 
         if(count($permissions) > 0){
             foreach ($permissions as $key => $value) {
-                $this->_create_permission($value, $new_account);
+                $this->create_permission($value, $new_account);
             }
         }
 
@@ -107,11 +120,11 @@ class Auth
         return $new_account;
     }
 
-    public function create_permission($module_id, $action_id, $account_id)
+    public function create_permission($action_id, $account_id)
     {
         $data = array(
             'module_action_id' => $action_id,
-            'module_id' => $module_id,
+            // 'module_id' => $module_id, //TODO Criar uma forma de buscar o module_id da lista de actions.
             'account_id' => $account_id,
             'created' => date('Y-m-d H:i:s'),
             'updated' => date('Y-m-d H:i:s')
@@ -196,7 +209,8 @@ class Auth
         if(count($permissions) > 0){
             $this->model->remove_permission_by_account($id);
             foreach ($permissions as $key => $value) {
-                $this->_create_permission($value, $id);
+                    // create_permission($action_id, $account_id)
+                $this->create_permission($value, $id);
             }
         }
 
@@ -314,11 +328,21 @@ class Auth
         }
     }
 
-    public function has_permission($url, $account_id = NULL)
+    /**
+     * Verifica se um usuário tem permissão para determinado link. A opção $override_root
+     * serve para não considerar o root na hora da checagem.
+     *
+     * @author Eliel de Paula <dev@elieldepaula.com.br>
+     * @param String $url Link da pagina Eg. 'admin/users'
+     * @param Integer $account_id ID da conta a ser testada. Caso seja null usa-se o usuário logado.
+     * @param Bool $override_root Ignora o ROOT na verificação.
+     * @return Mixed
+     */
+    public function has_permission($url, $account_id = NULL, $override_root = FALSE)
     {
         if($account_id == NULL)
             $account_id = $this->get_account_id();
-        if($this->get_login_data('role') == 'ROOT')
+        if($this->get_login_data('role') == 'ROOT' && $override_root == FALSE)
             return TRUE;
         else
            return $this->model->validate_permission($account_id, $url);
@@ -335,14 +359,14 @@ class Auth
         $query_module = $this->module->get_list(array('field'=>'order', 'order'=>'asc'))->result_array();
         // Adiciona as actions na lista de módulos.
         foreach ($query_module as $key => $value) {
-            $query_action = $this->module_action->get_by_field(array('whitelist'=>'0', 'module_id'=>$query_module[$key]['id']))->result_array();
+            $query_action = $this->module_action->get_by_field(array('whitelist'=>'0', 'module_id'=>$value['id']))->result_array();
             $query_module[$key]['actions'] = $query_action;
         }
         return $query_module;
     }
 
 //----------------------------------------------------------------
-//  Métodos privados
+//	Métodos privados
 //----------------------------------------------------------------
 
     private function _send_activation_email($data = null)
